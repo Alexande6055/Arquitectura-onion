@@ -1,6 +1,9 @@
 @page "/products"
 @inject HttpClient Http
 @using MyCleanApp.Client.Models
+@using System.Text.Json;
+
+@namespace MyCleanApp.Client.Shared
 
 <h3 class="text-2xl font-bold mb-6 text-blue-600">Gestión de Productos</h3>
 
@@ -20,8 +23,18 @@
 
     private async Task LoadProducts()
     {
-        products = await Http.GetFromJsonAsync<List<Product>>("api/products") ?? new();
+        var response = await Http.GetAsync("api/products");
+        if (response.IsSuccessStatusCode)
+        {
+            var json = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            products = JsonSerializer.Deserialize<List<Product>>(json, options) ?? new();
+        }
     }
+
 
     private async Task SaveProduct(Product product)
     {
