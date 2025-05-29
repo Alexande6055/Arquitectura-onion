@@ -1,0 +1,25 @@
+﻿<div class="bg-black/40 min-h-[3.5rem] flex items-center px-3 md:hidden">
+    <div class="flex justify-between items-center w-full">
+        <a class="text-white text-lg font-semibold" href="">MyCleanApp.Client</a>
+        <button title="Navigation menu" class="bg-white/10 p-2 rounded" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass md:block overflow-y-auto h-auto md:h-[calc(100vh-3.5rem)] bg-gradient-to-b from-[#052767] to-[#3a0647]" @onclick="ToggleNavMenu">
+    <nav class="flex flex-col px-3 py-2 text-sm">
+        <NavItem href="" text="Home" iconClass="bi-house-door-fill-nav-menu" match="NavLinkMatch.All" />
+        <NavItem href="counter" text="Counter" iconClass="bi-plus-square-fill-nav-menu" />
+        <NavItem href="weather" text="Weather" iconClass="bi-list-nested-nav-menu" />
+        <NavItem href="products" text="Productos" iconClass="bi-list-nested-nav-menu" />
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "hidden" : "";
+
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+}

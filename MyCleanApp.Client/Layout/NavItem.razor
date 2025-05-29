@@ -1,0 +1,18 @@
+@using Microsoft.AspNetCore.Components.Routing
+
+<div class="mb-1">
+    <NavLink class="flex items-center px-3 py-2 rounded text-gray-300 hover:bg-white/10 hover:text-white"
+             activeClass="bg-white/40 text-white"
+             href="@Href"
+             Match="@Match">
+        <span class="@IconClass inline-block w-5 h-5 mr-3 bg-no-repeat bg-center bg-contain"></span>
+        @Text
+    </NavLink>
+</div>
+
+@code {
+    [Parameter] public string Href { get; set; } = "/";
+    [Parameter] public string Text { get; set; } = "";
+    [Parameter] public string IconClass { get; set; } = "";
+    [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
+}

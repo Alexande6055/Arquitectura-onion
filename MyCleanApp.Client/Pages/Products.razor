@@ -1,0 +1,74 @@
+@page "/products"
+@inject HttpClient Http
+@using MyCleanApp.Client.Models
+
+<h3 class="text-2xl font-bold mb-6 text-blue-600">Gestión de Productos</h3>
+
+<ProductForm CurrentProduct="currentProduct" Editing="editing" OnSave="SaveProduct" OnCancel="CancelEdit" />
+
+<ProductList Products="products" OnEdit="EditProduct" OnDelete="DeleteProduct" />
+
+@code {
+    private List<Product> products = new();
+    private Product currentProduct = new();
+    private bool editing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        products = await Http.GetFromJsonAsync<List<Product>>("api/products") ?? new();
+    }
+
+    private async Task SaveProduct(Product product)
+    {
+        if (editing)
+        {
+            await Http.PutAsJsonAsync($"api/products/{product.ProductId}", product);
+        }
+        else
+        {
+            var response = await Http.PostAsJsonAsync("api/products", product);
+            var created = await response.Content.ReadFromJsonAsync<Product>();
+            if (created != null)
+                products.Add(created);
+        }
+
+        currentProduct = new Product();
+        editing = false;
+        await LoadProducts();
+    }
+
+    private void EditProduct(Product product)
+    {
+        currentProduct = new Product
+        {
+            ProductId = product.ProductId,
+            ProductName = product.ProductName,
+            SupplierId = product.SupplierId,
+            CategoryId = product.CategoryId,
+            QuantityPerUnit = product.QuantityPerUnit,
+            UnitPrice = product.UnitPrice,
+            UnitsInStock = product.UnitsInStock,
+            UnitsOnOrder = product.UnitsOnOrder,
+            ReorderLevel = product.ReorderLevel,
+            Discontinued = product.Discontinued
+        };
+        editing = true;
+    }
+
+    private void CancelEdit()
+    {
+        currentProduct = new Product();
+        editing = false;
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        await Http.DeleteAsync($"api/products/{id}");
+        await LoadProducts();
+    }
+}

@@ -1,0 +1,74 @@
+@using MyCleanApp.Client.Models
+@inherits OwningComponentBase
+
+<div class="mb-8 p-6 border border-gray-300 rounded-lg shadow bg-gray-50 max-w-xl">
+    <h4 class="text-lg font-semibold mb-4">@((Editing ? "Editar" : "Nuevo") + " Producto")</h4>
+    <div class="grid grid-cols-2 gap-4">
+        <input type="text" placeholder="Nombre del producto"
+               class="border border-gray-300 rounded px-4 py-2"
+               @bind="CurrentProduct.ProductName" />
+        <input type="number" placeholder="Precio"
+               class="border border-gray-300 rounded px-4 py-2"
+               @bind="CurrentProduct.UnitPrice" />
+
+        <input type="number" placeholder="Supplier ID"
+               class="border border-gray-300 rounded px-4 py-2"
+               @bind="CurrentProduct.SupplierId" />
+        <input type="number" placeholder="Category ID"
+               class="border border-gray-300 rounded px-4 py-2"
+               @bind="CurrentProduct.CategoryId" />
+
+        <input type="text" placeholder="Cantidad por unidad"
+               class="border border-gray-300 rounded px-4 py-2 col-span-2"
+               @bind="CurrentProduct.QuantityPerUnit" />
+
+        <input type="number" placeholder="Stock"
+               class="border border-gray-300 rounded px-4 py-2"
+               @bind="CurrentProduct.UnitsInStock" />
+        <input type="number" placeholder="Ordenes pendientes"
+               class="border border-gray-300 rounded px-4 py-2"
+               @bind="CurrentProduct.UnitsOnOrder" />
+
+        <input type="number" placeholder="Nivel de reorden"
+               class="border border-gray-300 rounded px-4 py-2"
+               @bind="CurrentProduct.ReorderLevel" />
+        <label class="flex items-center space-x-2">
+            <input type="checkbox" class="form-checkbox" @bind="CurrentProduct.Discontinued" />
+            <span>Descontinuado</span>
+        </label>
+    </div>
+
+    <div class="mt-4 space-x-3">
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                @onclick="SaveClicked">Guardar</button>
+        @if (Editing)
+        {
+            <button class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+                    @onclick="CancelClicked">Cancelar</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Product CurrentProduct { get; set; } = new();
+
+    [Parameter]
+    public bool Editing { get; set; }
+
+    [Parameter]
+    public EventCallback<Product> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task SaveClicked()
+    {
+        await OnSave.InvokeAsync(CurrentProduct);
+    }
+
+    private async Task CancelClicked()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

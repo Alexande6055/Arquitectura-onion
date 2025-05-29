@@ -1,0 +1,47 @@
+@using MyCleanApp.Client.Models
+
+<div class="overflow-x-auto">
+    <table class="min-w-full text-sm text-left border border-gray-200 shadow-md">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+            <tr>
+                <th class="px-4 py-3 border-b">ID</th>
+                <th class="px-4 py-3 border-b">Nombre</th>
+                <th class="px-4 py-3 border-b">Precio</th>
+                <th class="px-4 py-3 border-b">Cantidad por unidad</th>
+                <th class="px-4 py-3 border-b">Stock</th>
+                <th class="px-4 py-3 border-b">Descontinuado</th>
+                <th class="px-4 py-3 border-b text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            @foreach (var p in Products)
+            {
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 border-b">@p.ProductId</td>
+                    <td class="px-4 py-2 border-b">@p.ProductName</td>
+                    <td class="px-4 py-2 border-b">$@p.UnitPrice</td>
+                    <td class="px-4 py-2 border-b">@p.QuantityPerUnit</td>
+                    <td class="px-4 py-2 border-b">@p.UnitsInStock</td>
+                    <td class="px-4 py-2 border-b">@((p.Discontinued) ? "Sí" : "No")</td>
+                    <td class="px-4 py-2 border-b text-center space-x-2">
+                        <button class="text-sm text-blue-600 hover:underline"
+                                @onclick="@(() => OnEdit.InvokeAsync(p))">Editar</button>
+                        <button class="text-sm text-red-600 hover:underline"
+                                @onclick="@(() => OnDelete.InvokeAsync(p.ProductId))">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public List<Product> Products { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<Product> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+}
